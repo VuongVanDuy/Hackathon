@@ -1,12 +1,28 @@
+import requests
+import threading
 import http.server
 import socketserver
+import time
 
-PORT = 8000
+def run_serv():
 
-Handler = http.server.SimpleHTTPRequestHandler
+    PORT = 8000
 
-with socketserver.TCPServer(("", PORT), Handler) as httpd:
-    print("Сервер запущен на порту", PORT)
-    httpd.serve_forever()
+    Handler = http.server.SimpleHTTPRequestHandler
+
+    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+        print("Сервер запущен на порту", PORT)
+        httpd.serve_forever()
+
+
+    # Запуск локального сервера в отдельном потоке
+server_thread = threading.Thread(target=run_serv)
+server_thread.start()
+
+    
+
+    # Чтение данных с локального сервера
+time.sleep(2)
+
 
 

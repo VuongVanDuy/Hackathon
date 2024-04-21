@@ -17,6 +17,23 @@
             margin: 18px; /* Отступ между кнопками */
         }
     </style>
+    <style>
+        .parent {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .inner-left {
+            width: 150px;
+            
+        }
+        .inner-right {
+            flex-basis: 250px;
+            flex-grow: 1;
+            margin-left: 30px;
+            
+        }
+    </style>
 </head>
 <body>
     <!-- Встраиваемый HTML-файл будет отображен здесь -->
@@ -36,7 +53,16 @@
     <div id="selectedStars">
         &#9734;&#9734;&#9734;&#9734;&#9734;
     </div>
-    <input type="range" min="0" max="5" value="0" id="starRange" onchange="updateStars()">
+    
+    <div class="parent">
+        <div class="inner-left">
+            <input type="range" min="0" max="5" value="0" id="starRange" onchange="updateStars()">
+        </div>
+        <div class="inner-right">
+            4.2
+        </div>
+    </div>
+    
         
     <script>
         function updateStars() {{
