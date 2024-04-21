@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моя карта</title>
+    <style>
+        /* Стили для размещения кнопок */
+        .button-container {
+            
+            margin-left: 20px;
+            margin-top: -15px;
+            margin-bottom: -10px;
+        }
+        /* Стили для кнопок */
+        button {
+            margin: 18px; /* Отступ между кнопками */
+        }
+    </style>
+</head>
+<body>
+    <!-- Встраиваемый HTML-файл будет отображен здесь -->
+    <div id="map">
+        <iframe src="/route_map1.html" width="300px" height="600px" frameborder="0" id="MyFrame">
+            
+        </iframe> 
+    </div>
+    <!-- Контейнер для кнопок -->
+    <div class="button-container">
+        <button onclick="buttonClicked(1)">1062</button>
+        <button onclick="buttonClicked(2)">1064</button>
+        <button onclick="buttonClicked(3)">1065</button>
+    </div>
+
+    
+    <div id="selectedStars">
+        &#9734;&#9734;&#9734;&#9734;&#9734;
+    </div>
+    <input type="range" min="0" max="5" value="0" id="starRange" onchange="updateStars()">
+        
+    <script>
+        function updateStars() {{
+            var slider = document.getElementById("starRange");
+            var output = document.getElementById("selectedStars");
+            output.innerHTML = slider.value;
+            var starsDiv = slider.previousElementSibling;
+            starsDiv.innerHTML = '';
+            for (var i = 0; i < 5; i++) {{
+                if (i < slider.value) {{
+                    starsDiv.innerHTML += '&#9733;';
+                }} else {{
+                    starsDiv.innerHTML += '&#9734;';
+                }}
+            }}
+        }}
+    </script>
+
+    <!-- Скрипт для обработки нажатия кнопок -->
+    <script>
+        function buttonClicked(buttonNumber) {
+            // Действие при нажатии на каждую кнопку
+            switch (buttonNumber) {
+                case 1:
+                    // Действие для кнопки 1
+                    newSrc("/route_map1.html")
+                    console.log("Нажата кнопка 1");
+                    break;
+                case 2:
+                    // Действие для кнопки 2
+                    newSrc("/route_map2.html")
+                    console.log("Нажата кнопка 2");
+                    break;
+                case 3:
+                    // Действие для кнопки 3
+                    newSrc("/route_map3.html")
+                    console.log("Нажата кнопка 3");
+                    break;
+                default:
+                    break;
+            }
+        }
+    </script>
+</body>
+
+<script type="text/javascript">
+    function newSrc(source) {
+        document.getElementById("MyFrame").src=source;
+    } 
+</script>
+
+</html>
