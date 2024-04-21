@@ -60,14 +60,17 @@
         </div>
         <div class="inner-right">
             <p id="averageRating">Average Rating: 3.0</p>
+            
         </div>
     </div>
     
     <script>
+        let rating_before = 3
         function updateStars() {{
             var slider = document.getElementById("starRange");
             var starsSpan = document.getElementById("selectedStars");
             var averageRating = document.getElementById("averageRating");
+            
             
             var rating = '';
                 for (var i = 0; i < 5; i++) {
@@ -80,11 +83,30 @@
                 starsSpan.innerHTML = rating;
 
                 num = parseInt(slider.value);
-                averageRating.textContent = "Average Rating: " + ((num + 3) / 2).toFixed(1);
+                averageRating.textContent = "Average Rating: " + ((num + rating_before) / 2).toFixed(1);
                 
             }
         }
     </script>
+    <script>
+        function newMap() {
+            var slider = document.getElementById("starRange");
+            var starsSpan = document.getElementById("selectedStars");
+            var averageRating = document.getElementById("averageRating");
+            slider.value = 0
+            var rating = '';
+            for (var i = 0; i < 5; i++) {
+                if (i < slider.value) {
+                    rating += '&#9733;';
+                } else {
+                    rating += '&#9734;';
+                }
+            }
+            starsSpan.innerHTML = rating;
+            averageRating.textContent = "Average Rating: " + (rating_before).toFixed(1);
+        }
+    </script>
+
 
     <!-- Скрипт для обработки нажатия кнопок -->
     <script>
@@ -94,16 +116,22 @@
                 case 1:
                     // Действие для кнопки 1
                     newSrc("/route_map1.html")
+                    rating_before = 3
+                    newMap()
                     console.log("Нажата кнопка 1");
                     break;
                 case 2:
                     // Действие для кнопки 2
                     newSrc("/route_map2.html")
+                    rating_before = 2
+                    newMap()
                     console.log("Нажата кнопка 2");
                     break;
                 case 3:
                     // Действие для кнопки 3
                     newSrc("/route_map3.html")
+                    rating_before = 1
+                    newMap()
                     console.log("Нажата кнопка 3");
                     break;
                 default:
