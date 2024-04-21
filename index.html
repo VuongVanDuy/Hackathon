@@ -30,8 +30,8 @@
         .inner-right {
             flex-basis: 250px;
             flex-grow: 1;
-            margin-left: 30px;
-            
+            margin-left: 10px;
+            margin-top: -20px;
         }
     </style>
 </head>
@@ -54,31 +54,37 @@
         &#9734;&#9734;&#9734;&#9734;&#9734;
     </div>
     
+    
     <div class="parent">
         <div class="inner-left">
             <input type="range" min="0" max="5" value="0" id="starRange" onchange="updateStars()">
         </div>
         <div class="inner-right">
-            4.2
+            <p id="averageRating">Average Rating: 3.0</p>
         </div>
     </div>
     
-        
     <script>
         function updateStars() {{
             var slider = document.getElementById("starRange");
-            var output = document.getElementById("selectedStars");
-            output.innerHTML = slider.value;
-            var starsDiv = slider.previousElementSibling;
-            starsDiv.innerHTML = '';
-            for (var i = 0; i < 5; i++) {{
-                if (i < slider.value) {{
-                    starsDiv.innerHTML += '&#9733;';
-                }} else {{
-                    starsDiv.innerHTML += '&#9734;';
-                }}
-            }}
-        }}
+            var starsSpan = document.getElementById("selectedStars");
+            var averageRating = document.getElementById("averageRating");
+            
+            var rating = '';
+                for (var i = 0; i < 5; i++) {
+                    if (i < slider.value) {
+                        rating += '&#9733;';
+                    } else {
+                        rating += '&#9734;';
+                    }
+                }
+                starsSpan.innerHTML = rating;
+
+                num = parseInt(slider.value);
+                averageRating.textContent = "Average Rating: " + ((num + 3) / 2).toFixed(1);
+                
+            }
+        }
     </script>
 
     <!-- Скрипт для обработки нажатия кнопок -->
