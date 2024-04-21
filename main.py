@@ -2,7 +2,6 @@ import requests
 import threading
 import http.server
 import socketserver
-import time
 
 def run_serv():
 
@@ -21,8 +20,6 @@ server_thread.start()
 
     
 
-    # Чтение данных с локального сервера
-time.sleep(2)
 
 
 
