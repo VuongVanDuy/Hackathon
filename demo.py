@@ -1,63 +1,74 @@
-from kivy.garden.mapview import MapView
-from kivy.app import App
-from kivy.uix.button import Button
-from kivy.uix.popup import Popup
-from kivy.uix.label import Label
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.scrollview import ScrollView
-
-
-class MyApp(App):
-    def build(self):
-        # Tạo nút mở popup
-        layout = BoxLayout(orientation='vertical')
-        scroll_view = ScrollView(size_hint=(1, None), size=(500, 700))
-        mapview = MapView(zoom=11, lat=50.6394, lon=3.057)
-        scroll_view.add_widget(mapview)
-        btn_layout = GridLayout(rows=1, cols=3)
-        btn1 = Button(text="Open Popup 1", size_hint=(.5, .1))
-        btn1.bind(on_press=self.show_popup1)
-        btn2 = Button(text="Open Popup 2", size_hint=(.5, .1))
-        btn2.bind(on_press=self.show_popup2)
-        btn3 = Button(text="Open Popup 3", size_hint=(.5, .1))
-        btn3.bind(on_press=self.show_popup3)
-        btn_layout.add_widget(btn1)
-        btn_layout.add_widget(btn2)
-        btn_layout.add_widget(btn3)
-        layout.add_widget(scroll_view)
-        layout.add_widget(btn_layout)
-        return layout
-    
-    def show_popup1(self, instance):
-        # Tạo nội dung cho popup
-        popup_content = Label(text="Hello, this is a popup!")
-
-        # Tạo popup
-        popup = Popup(title="Demo Popup", content=popup_content, size_hint=(None, None), size=(400, 400), auto_dismiss=True)
-        
-        # Hiển thị popup
-        popup.open()
-    
-    def show_popup2(self, instance):
-        # Tạo nội dung cho popup
-        popup_content = Label(text="Hello, this is a popup!")
-
-        # Tạo popup
-        popup = Popup(title="Demo Popup", content=popup_content, size_hint=(None, None), size=(400, 400), auto_dismiss=True)
-        
-        # Hiển thị popup
-        popup.open()
-    
-    def show_popup3(self, instance):
-        # Tạo nội dung cho popup
-        popup_content = Label(text="Hello, this is a popup!")
-
-        # Tạo popup
-        popup = Popup(title="Demo Popup", content=popup_content, size_hint=(None, None), size=(400, 400), auto_dismiss=True)
-        
-        # Hiển thị popup
-        popup.open()
-
-if __name__ == '__main__':
-    MyApp().run()
+from PyQt5 import QtCore, QtGui, QtWidgets  
+  
+class Ui_Dialog(object):  
+    def setupUi(self, Dialog):  
+        Dialog.setObjectName("Dialog")  
+        Dialog.resize(812, 632)  
+        Dialog.setStyleSheet("background-color: rgb(0, 170, 255);")  
+        self.frame = QtWidgets.QFrame(Dialog)  
+        self.frame.setGeometry(QtCore.QRect(90, 80, 631, 461))  
+        self.frame.setStyleSheet("background-color: rgb(255, 255, 255);")  
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)  
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)  
+        self.frame.setObjectName("frame")  
+        self.label = QtWidgets.QLabel(self.frame)  
+        self.label.setGeometry(QtCore.QRect(230, 80, 171, 51))  
+        font = QtGui.QFont()  
+        font.setPointSize(16)  
+        self.label.setFont(font)  
+        self.label.setStyleSheet("color: rgb(255, 0, 0);")  
+        self.label.setObjectName("label")  
+        self.label_2 = QtWidgets.QLabel(self.frame)  
+        self.label_2.setGeometry(QtCore.QRect(90, 190, 121, 31))  
+        font = QtGui.QFont()  
+        font.setPointSize(12)  
+        self.label_2.setFont(font)  
+        self.label_2.setObjectName("label_2")  
+        self.label_3 = QtWidgets.QLabel(self.frame)  
+        self.label_3.setGeometry(QtCore.QRect(90, 260, 121, 21))  
+        font = QtGui.QFont()  
+        font.setPointSize(12)  
+        self.label_3.setFont(font)  
+        self.label_3.setObjectName("label_3")  
+        self.lineEdit = QtWidgets.QLineEdit(self.frame)  
+        self.lineEdit.setGeometry(QtCore.QRect(260, 190, 231, 31))  
+        self.lineEdit.setStyleSheet("background-color: rgb(209, 207, 255);")  
+        self.lineEdit.setObjectName("lineEdit")  
+        self.lineEdit_2 = QtWidgets.QLineEdit(self.frame)  
+        self.lineEdit_2.setGeometry(QtCore.QRect(260, 260, 231, 31))  
+        self.lineEdit_2.setStyleSheet("background-color:#d1cfff;")  
+        self.lineEdit_2.setEchoMode(QtWidgets.QLineEdit.Password)  
+        self.lineEdit_2.setObjectName("lineEdit_2")  
+        self.pushButton = QtWidgets.QPushButton(self.frame)  
+        self.pushButton.setGeometry(QtCore.QRect(350, 360, 161, 41))  
+        font = QtGui.QFont()  
+        font.setPointSize(14)  
+        self.pushButton.setFont(font)  
+        self.pushButton.setStyleSheet("background-color: rgb(0, 170, 0);")  
+        self.pushButton.setObjectName("pushButton")  
+        self.pushButton_2 = QtWidgets.QPushButton(self.frame)  
+        self.pushButton_2.setGeometry(QtCore.QRect(220, 360, 101, 41))  
+        self.pushButton_2.setStyleSheet("background-color:#ffff7f;")  
+        self.pushButton_2.setObjectName("pushButton_2")  
+  
+        self.retranslateUi(Dialog)  
+        QtCore.QMetaObject.connectSlotsByName(Dialog)  
+  
+    def retranslateUi(self, Dialog):  
+        _translate = QtCore.QCoreApplication.translate  
+        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))  
+        self.label.setText(_translate("Dialog", "Log in Form"))  
+        self.label_2.setText(_translate("Dialog", "User Name"))  
+        self.label_3.setText(_translate("Dialog", "Password"))  
+        self.pushButton.setText(_translate("Dialog", "Log in"))  
+        self.pushButton_2.setText(_translate("Dialog", "Sign up"))  
+  
+  
+if __name__ == "__main__":  
+    import sys  
+    app = QtWidgets.QApplication(sys.argv)  
+    Dialog = QtWidgets.QDialog()  
+    ui = Ui_Dialog()  
+    ui.setupUi(Dialog)  
+    Dialog.show()  
+    sys.exit(app.exec_())  
