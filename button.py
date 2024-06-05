@@ -3,26 +3,30 @@ from PyQt5.QtCore import Qt, QRect, QSize
 from PyQt5.QtGui import QPainter, QPen
 
 class CustomWidget(QWidget):
-    def __init__(self):
+    def __init__(self, nameStops):
         super().__init__()
+        self.nameStops = nameStops
         self.buttons = []
         self.main_layout = QVBoxLayout(self)
 
         # Create buttons and add them to the layout
-        for i in range(7):
+        for i in range(len(self.nameStops)):
             widget = QWidget()
             layout_widget = QHBoxLayout(widget)
             button = QPushButton(self)
             layout_widget.addWidget(button)
-            label = QLabel("aaaaaaa")
+            label = QLabel(self.nameStops[i])
             label.setStyleSheet("font-size: 14px")
             layout_widget.addWidget(label)
+
             widget.setLayout(layout_widget)
             button.setFixedSize(16, 16)  # Set a fixed size for the buttons
             button.setStyleSheet(self.get_button_style(i == 3))  # Style buttons, highlight the middle one
-            #self.main_layout.addWidget(button, alignment=Qt.AlignCenter)
-            self.main_layout.addWidget(widget, alignment=Qt.AlignCenter)
+            self.main_layout.addWidget(widget)
             self.buttons.append(button)
+        
+        # for button in self.buttons:
+        #     button.clicked.connect(self.on_button_click)
 
         self.main_layout.addStretch()  # Add stretch to center the buttons
 
