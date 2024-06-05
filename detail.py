@@ -1,5 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QApplication,QSizePolicy, QWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QFrame, QListWidget
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore  import Qt
 from button import CustomWidget
 class DetailRoute(QWidget):
     def __init__(self, route):
@@ -35,8 +36,8 @@ class DetailRoute(QWidget):
 
         # Navigation buttons
         nav_buttons_layout = QHBoxLayout()
-        btn_route_go = QPushButton("Xem lượt đi")
-        btn_route_return = QPushButton("Xem lượt về")
+        btn_route_go = QPushButton("Посмотреть маршрут")
+        btn_route_return = QPushButton("Посмотреть обратный маршрут")
         nav_buttons_layout.addWidget(btn_route_go)
         nav_buttons_layout.addWidget(btn_route_return)
         left_panel_layout.addLayout(nav_buttons_layout)
@@ -46,37 +47,57 @@ class DetailRoute(QWidget):
         
         # Tab 1
         tab1 = QWidget()
-        tab_route.addTab(tab1, "Biểu đồ giờ")
+        tab_route.addTab(tab1, "График")
         
         tab2 = QWidget()
         layout_tab2 = QVBoxLayout(tab2)
-        tab_route.addTab(tab2, "Trạm dừng")
+        self.scroll_frame = QFrame()
+        self.scroll_layout = QVBoxLayout(self.scroll_frame)
         
-        tab3 = QWidget()
-        tab_route.addTab(tab3, "Thông tin")
+        # Create scroll area
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
         
-        tab4 = QWidget()
-        tab_route.addTab(tab4, "Đánh giá")
+        scroll_content = QWidget()
+        scroll_content_layout = QVBoxLayout(scroll_content)
         
-        left_panel_layout.addWidget(tab_route)
-        # List of stops
-        stop_list = QListWidget()
-        stops = [
-            "Tòa nhà S2.01", "Tòa nhà S1.01", "Chợ Gò Công",
-            "UBND phường Long Thạnh Mỹ", "Cao đẳng Cảnh sát nhân dân 2",
-            "Trường Nguyễn Huệ", "Trạm y tế Phường Long Thạnh Mỹ",
-            "Ngã ba Mỹ Thành", "Ngã ba Mỹ Thành", "Saigon Hi-tech Park",
-            "Trường ĐH Nguyễn Tất Thành", "Công ty Platel Vina",
-            "Công ty SAMSUNG", "Vòng xoay Liên Phường"
-        ]
-        stop_list.addItems(stops)
-        #layout_tab2.addWidget(stop_list)
-        btns = CustomWidget()
-        layout_tab2.addWidget(btns)
-        #left_panel_layout.addWidget(stop_list)
+        stops = ['Конечная станция "Ул. Маршала Тухачевского" (посадки/высадки нет)', 
+                 'Апрельская ул.', 'Апрельская ул. / Пр. Металлистов', 'Шоссе Революции', 
+                 'Б. Пороховская ул.', 'Объединение "Луч" ', 'Шепетовская ул.', 'Якорная ул.', 
+                 'Красногвардейская площадь ', 'Новочеркасский пр.', 'Ул. Помяловского', 
+                 'Республиканская ул.', 'Заневская пл.', 'Ст. метро "Новочеркасская"', 
+                 'Ст. метро "Пл. Александра Невского"', 'Исполкомская ул.', 'Полтавская ул.', 
+                 'Суворовский пр.', 'Ст. метро "Площадь Восстания"', 'Литейный пр.', 
+                 'Ст. метро "Гостиный Двор"', 'Ст. метро "Невский проспект"', 'Б. Конюшенная ул.', 
+                 'М. Морская ул.', 'Университетская наб.', 'Университет', 'Кадетская линия В.О.', 
+                 'Большой пр. В.О.', '1-я и Кадетская линии. Ст. метро "Спортивная"', 
+                 'Ст. метро "Спортивная"', 'Пер. Талалихина', 'Пионерская ул.', 'Введенская ул.', 
+                 'Ул. Ленина', 'Ординарная ул. (оборотная)']
+       
+        self.custom_widget = CustomWidget(stops)
+        for button in self.custom_widget.buttons:
+            button.clicked.connect(self.on_button_click)
+        scroll_content_layout.addWidget(self.custom_widget)
+        #scroll_content_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
+        scroll_area.setWidget(scroll_content)
+        
+        # Add scroll area to the scroll frame layout
+        self.scroll_layout.addWidget(scroll_area)
 
+        # Add scroll frame to tab layout
+        layout_tab2.addWidget(self.scroll_frame)
+        
+        tab2.setLayout(layout_tab2)
+        tab_route.addTab(tab2, "Остановка")
         # Adding left panel to the main layout
         
+        tab3 = QWidget()
+        tab_route.addTab(tab3, "Информация")
+        
+        tab4 = QWidget()
+        tab_route.addTab(tab4, "Оценка")
+        
+        left_panel_layout.addWidget(tab_route)
         layout_widget.addWidget(left_panel)
        # layout_widget.addWidget(tab_route)
         
@@ -91,6 +112,14 @@ class DetailRoute(QWidget):
         else:
             self.scroll_frame.setVisible(True)
             self.hide_button.setText('◀')
+    
+    def on_button_click(self):
+        sender = self.sender()
+        for i in range(len(self.custom_widget.buttons)):
+            if sender == self.custom_widget.buttons[i]:
+                self.custom_widget.buttons[i].setStyleSheet(self.custom_widget.get_button_style(True))
+            else:
+                self.custom_widget.buttons[i].setStyleSheet(self.custom_widget.get_button_style(False))
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

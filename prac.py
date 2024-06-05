@@ -1,30 +1,36 @@
+import json
 
-# viết mã tạo ứng dụng android đơn giản, có 1 nút, khi click vào nút sẽ gửi request và nhận response từ server https://spb-transport.gate.petersburg.ru/
+# Function to read a JSON file and return its content
+def read_json(file_path):
+    with open(file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+    return data
 
-# Path: app.py
-import requests
-from kivy.app import App
-from kivy.uix.button import Button
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.recycleview import RecycleView
+# Path to your JSON file
+file_path = './data/stops.json'
 
-class MyApp(App):
-    def build(self):
-        layout = GridLayout(cols=3)
-        button = Button(text='Click me')
-        
-        button.bind(on_press=self.on_press)
-        layout.add_widget(button)
-        return layout
+# Read the JSON file
+data = read_json(file_path)
 
-    def on_press(self, instance):
-        url = 'https://spb-transport.gate.petersburg.ru/api/stops'
-        response = requests.get(url)
-        print(response.text)
+file_path_1 = './data/1062_coords.json'
+data_1 = read_json(file_path_1)
+# Print the data
+stopsInfo = data['result']
 
-    
-    
+IdStop_name = {}
+for i in range(len(stopsInfo)):
+    IdStop_name[stopsInfo[i]['id']] = stopsInfo[i]['name']
 
-if __name__ == '__main__':
-    MyApp().run()
+#print(IdStop_name)
 
+info1062 = data_1['result'][0]
+stopId1062 = info1062['stopIDs']
+
+nameStops = []
+for i in range(len(stopId1062)):
+    stop_id = stopId1062[i]
+    if stop_id in IdStop_name:
+        name = IdStop_name[stop_id]
+        nameStops.append(name)
+
+print(nameStops)

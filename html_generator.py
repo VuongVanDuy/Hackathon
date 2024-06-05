@@ -9,6 +9,7 @@ m = folium.Map(location=[59.9343, 30.3351], zoom_start=12)
 def getCoords(RouteId):
     response = requests.get(f"https://spb-transport.gate.petersburg.ru/api/stops/{RouteId}/1")
     data = response.json()
+    print(data)
     coordinates = [[point["lon"], point["lat"]] for point in data["result"][0]["path"]]
     return coordinates
 
