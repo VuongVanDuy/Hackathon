@@ -5,9 +5,12 @@ import datetime
 
 m = folium.Map(location=[59.9343, 30.3351], zoom_start=12)
 
-
+token1 = f"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhU1RaZm42bHpTdURYcUttRkg1SzN5UDFhT0FxUkhTNm9OendMUExaTXhFIn0.eyJleHAiOjE4MDgzMDAwNjIsImlhdCI6MTcxMzYwNTY2MiwianRpIjoiOWYwYTFmZmEtMDU3Ny00MjZmLWExMTItMjk4NTdmOGE1Mzc4IiwiaXNzIjoiaHR0cHM6Ly9rYy5wZXRlcnNidXJnLnJ1L3JlYWxtcy9lZ3MtYXBpIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjExNDI0YmU2LTViNjYtNGE1Mi1iNTgwLWJmMWI5Zjg1MGE2YyIsInR5cCI6IkJlYXJlciIsImF6cCI6ImFkbWluLXJlc3QtY2xpZW50Iiwic2Vzc2lvbl9zdGF0ZSI6IjU3OTkwY2Q4LTY5NjQtNDJjZC1iODZkLWU4NzI5MGEzMWY3YiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiLyoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtZWdzLWFwaSIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6ImVtYWlsIHByb2ZpbGUiLCJzaWQiOiI1Nzk5MGNkOC02OTY0LTQyY2QtYjg2ZC1lODcyOTBhMzFmN2IiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsIm5hbWUiOiJEdXkgVm5nIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiOWI4ODE1ZDYyYjNjYjQ0MGYwY2ZmMmIxMzI3Njk4NWIiLCJnaXZlbl9uYW1lIjoiRHV5IiwiZmFtaWx5X25hbWUiOiJWbmcifQ.i_GWzBOzwmfnOeM2FZuSYl0zdlW6TiWvxWu_TeUvI4oC5RUOQcZJ4cezevuEWTfNrQauwlZ2FAfyhUibNejqecGm6ogoWHHY9sVvI77H2FKDjHBwld65GgxyS_voFse8wACTW2FN_UR7gu1fM1ZKJE8Z7Fbec3kVl1JrPLXy7snM2Krz0QB1qBgL2F9s-l4DVVbZd9icrqUgcOCVcQZ2Z7pIw56MQs0jzYWMz5hSdmQNZNGhozGqU9XsAbt-Yxp-VPCvFcvLnbc3prF9NHXE9JWoJehEFN0aN0tpuzqcXYt0gSBshsExMWGOR0X8vwduG7EY4SWezsy-woOm2WLd3g"
 def getCoords(RouteId):
-    response = requests.get(f"https://spb-transport.gate.petersburg.ru/api/stops/{RouteId}/1")
+    headers = {
+        "Authorization": f"Bearer {token1}"
+    }
+    response = requests.get(f"https://spb-transport.gate.petersburg.ru/api/stops/{RouteId}/1", headers=headers)
     data = response.json()
     print(data)
     coordinates = [[point["lon"], point["lat"]] for point in data["result"][0]["path"]]
