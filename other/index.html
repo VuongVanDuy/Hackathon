@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моя карта</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        /* Стили для размещения кнопок */
+        .button-container {
+            margin-top: -5px;
+            text-align: left;
+        }
+        button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #selectedStars {
+            margin-left: 100px;
+            font-size: 20px;
+        }
+        #starRange {
+            width: 80%;
+        }
+    </style>
+    <style>
+        .parent {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .inner-left {
+            width: 150px;
+            
+        }
+        .inner-right {
+            flex-basis: 250px;
+            flex-grow: 1;
+            margin-top: -16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Встраиваемый HTML-файл будет отображен здесь -->
+    <div id="map">
+        <iframe src="/route_map1.html" width="300px" height="600px" frameborder="0" id="MyFrame">
+            
+        </iframe> 
+    </div>
+    <!-- Контейнер для кнопок -->
+    <div class="button-container">
+        <button onclick="buttonClicked(1)">1062</button>
+        <button onclick="buttonClicked(2)">1064</button>
+        <button onclick="buttonClicked(3)">1065</button>
+    </div>
+
+    
+    <div id="selectedStars">
+        &#9734;&#9734;&#9734;&#9734;&#9734;
+    </div>
+    
+    
+    <div class="parent">
+        <div class="inner-left">
+            <input type="range" min="0" max="5" value="0" id="starRange" onchange="updateStars()">
+        </div>
+        <div class="inner-right">
+            <p id="averageRating">Average Rating: 3.0</p>
+            
+        </div>
+    </div>
+    
+    <script>
+        let rating_before = 3
+        function updateStars() {{
+            var slider = document.getElementById("starRange");
+            var starsSpan = document.getElementById("selectedStars");
+            var averageRating = document.getElementById("averageRating");
+            
+            
+            var rating = '';
+                for (var i = 0; i < 5; i++) {
+                    if (i < slider.value) {
+                        rating += '&#9733;';
+                    } else {
+                        rating += '&#9734;';
+                    }
+                }
+                starsSpan.innerHTML = rating;
+
+                num = parseInt(slider.value);
+                averageRating.textContent = "Average Rating: " + ((num + rating_before) / 2).toFixed(1);
+                
+            }
+        }
+    </script>
+    <script>
+        function newMap() {
+            var slider = document.getElementById("starRange");
+            var starsSpan = document.getElementById("selectedStars");
+            var averageRating = document.getElementById("averageRating");
+            slider.value = 0
+            var rating = '';
+            for (var i = 0; i < 5; i++) {
+                if (i < slider.value) {
+                    rating += '&#9733;';
+                } else {
+                    rating += '&#9734;';
+                }
+            }
+            starsSpan.innerHTML = rating;
+            averageRating.textContent = "Average Rating: " + (rating_before).toFixed(1);
+        }
+    </script>
+
+
+    <!-- Скрипт для обработки нажатия кнопок -->
+    <script>
+        function buttonClicked(buttonNumber) {
+            // Действие при нажатии на каждую кнопку
+            switch (buttonNumber) {
+                case 1:
+                    // Действие для кнопки 1
+                    newSrc("/route_map1.html")
+                    rating_before = 3
+                    newMap()
+                    console.log("Нажата кнопка 1");
+                    break;
+                case 2:
+                    // Действие для кнопки 2
+                    newSrc("/route_map2.html")
+                    rating_before = 2
+                    newMap()
+                    console.log("Нажата кнопка 2");
+                    break;
+                case 3:
+                    // Действие для кнопки 3
+                    newSrc("/route_map3.html")
+                    rating_before = 1
+                    newMap()
+                    console.log("Нажата кнопка 3");
+                    break;
+                default:
+                    break;
+            }
+        }
+    </script>
+</body>
+
+<script type="text/javascript">
+    function newSrc(source) {
+        document.getElementById("MyFrame").src=source;
+    } 
+</script>
+
+</html>

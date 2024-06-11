@@ -1,14 +1,19 @@
 import sys
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore  import Qt
+from PyQt5.QtCore  import pyqtSignal, QObject
+
 from button import CustomWidget
+
 class DetailRoute(QWidget):
-    def __init__(self, route):
+    changeAddr = pyqtSignal(str)
+    
+    def __init__(self, route, stops):
         super().__init__()
 
         self.setFixedWidth(450)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
         self.route = route
+        self.stops = stops
         layout = QVBoxLayout(self)
         self.frame_detail = QFrame()
         layout.addWidget(self.frame_detail)
@@ -61,20 +66,7 @@ class DetailRoute(QWidget):
         scroll_content = QWidget()
         scroll_content_layout = QVBoxLayout(scroll_content)
         
-        stops = ['Конечная станция "Ул. Маршала Тухачевского" (посадки/высадки нет)', 
-                 'Апрельская ул.', 'Апрельская ул. / Пр. Металлистов', 'Шоссе Революции', 
-                 'Б. Пороховская ул.', 'Объединение "Луч" ', 'Шепетовская ул.', 'Якорная ул.', 
-                 'Красногвардейская площадь ', 'Новочеркасский пр.', 'Ул. Помяловского', 
-                 'Республиканская ул.', 'Заневская пл.', 'Ст. метро "Новочеркасская"', 
-                 'Ст. метро "Пл. Александра Невского"', 'Исполкомская ул.', 'Полтавская ул.', 
-                 'Суворовский пр.', 'Ст. метро "Площадь Восстания"', 'Литейный пр.', 
-                 'Ст. метро "Гостиный Двор"', 'Ст. метро "Невский проспект"', 'Б. Конюшенная ул.', 
-                 'М. Морская ул.', 'Университетская наб.', 'Университет', 'Кадетская линия В.О.', 
-                 'Большой пр. В.О.', '1-я и Кадетская линии. Ст. метро "Спортивная"', 
-                 'Ст. метро "Спортивная"', 'Пер. Талалихина', 'Пионерская ул.', 'Введенская ул.', 
-                 'Ул. Ленина', 'Ординарная ул. (оборотная)']
-       
-        self.custom_widget = CustomWidget(stops)
+        self.custom_widget = CustomWidget(self.stops)
         for button in self.custom_widget.buttons:
             button.clicked.connect(self.on_button_click)
         scroll_content_layout.addWidget(self.custom_widget)
@@ -118,6 +110,7 @@ class DetailRoute(QWidget):
         for i in range(len(self.custom_widget.buttons)):
             if sender == self.custom_widget.buttons[i]:
                 self.custom_widget.buttons[i].setStyleSheet(self.custom_widget.get_button_style(True))
+                self.changeAddr.emit(self.custom_widget.nameAddr[i].text())
             else:
                 self.custom_widget.buttons[i].setStyleSheet(self.custom_widget.get_button_style(False))
 

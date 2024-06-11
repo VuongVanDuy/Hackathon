@@ -7,6 +7,7 @@ class CustomWidget(QWidget):
         super().__init__()
         self.nameStops = nameStops
         self.buttons = []
+        self.nameAddr = []
         self.main_layout = QVBoxLayout(self)
 
         # Create buttons and add them to the layout
@@ -24,6 +25,7 @@ class CustomWidget(QWidget):
             button.setStyleSheet(self.get_button_style(i == 3))  # Style buttons, highlight the middle one
             self.main_layout.addWidget(widget)
             self.buttons.append(button)
+            self.nameAddr.append(label)
         
         # for button in self.buttons:
         #     button.clicked.connect(self.on_button_click)

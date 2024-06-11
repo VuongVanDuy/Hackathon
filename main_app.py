@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QApplication, QSizePolicy, QMainWindow, QWidget, QTa
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QUrl
 from PyQt5.QtWebEngineWidgets import QWebEngineView
+import json
 from detail import DetailRoute
 import os
 
@@ -16,6 +17,7 @@ class BusMapApp(QMainWindow):
         self.main_widget = QWidget()
         self.setCentralWidget(self.main_widget)
         self.main_layout = QHBoxLayout(self.main_widget)
+        self.buttons = []
         
         # frame tabs
         self.frame_tabs = QFrame()
@@ -65,7 +67,7 @@ class BusMapApp(QMainWindow):
         scroll_content_layout.addWidget(self.create_bus_info('1065', 'Bến Thành - Bến Xe buýt Chợ Lớn', '05:00 - 20:15', '5,000 VNĐ'))
         scroll_content_layout.addWidget(self.create_bus_info('03', 'Bến Thành - Thạnh Lộc', '04:00 - 20:45', '6,000 VNĐ'))
         scroll_content_layout.addWidget(self.create_bus_info('03', 'Bến Thành - Thạnh Lộc', '04:00 - 20:45', '6,000 VNĐ'))
-        
+
         scroll_content_layout.addWidget(self.create_bus_info('Tuyến số 03', 'Bến Thành - Thạnh Lộc', '04:00 - 20:45', '6,000 VNĐ'))
         scroll_area.setWidget(scroll_content)
         
@@ -112,8 +114,17 @@ class BusMapApp(QMainWindow):
     
     def showRoute(self, html_file):
         url = QUrl.fromLocalFile(os.path.realpath(html_file))
-        self.map.load(url)
-           
+        # first_addr =  list(self.infoCurRoute.keys())[0]
+        # print(first_addr)
+        # self.update_location(first_addr)
+        self.map.setUrl(url)
+    
+    def update_location(self, newAddr):
+        lat = self.infoCurRoute[newAddr][0]
+        lon = self.infoCurRoute[newAddr][1]
+        # Call JavaScript function to update marker location
+        self.map.page().runJavaScript(f"updateMarker({lat}, {lon});")
+        
     def create_bus_info(self, route, description, time, price):
         button = QPushButton()
         button.setFixedHeight(120)
@@ -136,14 +147,23 @@ class BusMapApp(QMainWindow):
         return button
 
     def showDetailRoute(self, route):
+        print(route)
+        try:
+            with open(f'./data/{route}_stops.json', 'r', encoding='utf-8') as file:
+                self.infoCurRoute = json.load(file)
+        except Exception as e:
+            print(e)
+        
+        stops_route = list(self.infoCurRoute.keys())
         self.frame_tabs.setVisible(False)
-        self.frame_detail = DetailRoute(route)
+        self.frame_detail = DetailRoute(route, stops_route)
         self.main_layout.insertWidget(0, self.frame_detail)
-        self.main_widget.setLayout(self.main_layout)
-        self.showRoute(f"./{route}" + ".html")
+        self.main_widget.setLayout(self.main_layout)   
+        self.showRoute(f"./{route}" + ".html")   
         self.frame_detail.back_button.clicked.connect(self.backTabs)
         self.hide_button.clicked.disconnect(self.toggle_visibility_tabs)
         self.hide_button.clicked.connect(self.toggle_visibility_details)
+        self.frame_detail.changeAddr.connect(self.update_location)
         
     
     def backTabs(self):
