@@ -1,18 +1,23 @@
 import json
+import os
 
 # Function to read a JSON file and return its content
 class init_data():
-    def __init__(self, routeId):
+    def __init__(self, routeId, direction):
         self.file_stops = './data/stops.json'
-        self.file_route = f'./data/{routeId}_coords.json'
+        self.file_route = f'./data/direction_{direction}/{routeId}.json'
         self.data_route = self.read_data(self.file_route)
         self.create_data_stops()
         
            
     def read_data(self, file_path):
-        with open(file_path, 'r', encoding='utf-8') as file:
-            data = json.load(file)
-        return data['result']
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+            return data['result']
+        except Exception as e:
+            print("Error:", e)
+            return None 
 
     def get_coords_route(self):
         path_route = self.data_route[0]['path']
@@ -42,13 +47,34 @@ class init_data():
         #     json.dump(stops_1062, file, ensure_ascii=False, indent=4)
         return self.stops_route
         
+def get_all_routesId():
+    path = './data/direction_0'
+    files = os.listdir(path)
+    routesId = []
+    for file in files:
+        if file.endswith('.json'):
+            route = file.split('.')[0]
+            routesId.append(route)
+    return routesId
 
+def get_info_general_routes():
+    with open('./data/routes.json', 'r', encoding='utf-8') as file:
+            data = json.load(file)
+            
+    data_all_routes = {}
+    for i in range(len(data['result'])):
+        data_all_routes[data['result'][i]['id']] = data['result'][i]['long_name']
+    
+    routes = []
+    routesId = get_all_routesId()
+    for routeId in routesId:
+        routes.append([routeId, data_all_routes[routeId], '6:00 - 24:00', '60 рублей (карта Виза) - 45 рублей (карта Мир)'])
+    return routes  
 
 if __name__ == '__main__':
-    data_route = init_data(1062)
+    data_route = init_data(1062, 0)
     #print(data_route.get_stops_of_route())
     res = data_route.get_coords_route()
-    for i in res:
-        print(i)
+    print(get_info_general_routes())
 
 

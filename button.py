@@ -22,7 +22,7 @@ class CustomWidget(QWidget):
 
             widget.setLayout(layout_widget)
             button.setFixedSize(16, 16)  # Set a fixed size for the buttons
-            button.setStyleSheet(self.get_button_style(i == 3))  # Style buttons, highlight the middle one
+            button.setStyleSheet(self.get_button_style(i == 0))  # Style buttons, highlight the middle one
             self.main_layout.addWidget(widget)
             self.buttons.append(button)
             self.nameAddr.append(label)

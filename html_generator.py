@@ -7,8 +7,8 @@ from init_data import init_data
 m = folium.Map(location=[59.9343, 30.3351], zoom_start=12)
 
 
-def getCoords(routeId):
-    data_route = init_data(routeId)
+def getCoords(routeId, direction):
+    data_route = init_data(routeId, direction)
     return data_route.get_coords_route()
 
 
@@ -42,8 +42,11 @@ def main():
         route_id = input("Enter the route ID (or type 'q' to quit): ")
         if route_id.lower() == 'q':
             break
+        direction = input("Enter the direction route (or type 'q' to quit): ")
+        if direction.lower() == 'q':
+            break
         try:
-            route_coordinates = getCoords(route_id)
+            route_coordinates = getCoords(route_id, direction)
             draw_route(route_coordinates)
         except Exception as e:
             print("Error:", e)

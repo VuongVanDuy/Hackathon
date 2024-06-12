@@ -1,9 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QSizePolicy, QMainWindow, QWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QScrollArea, QLabel, QLineEdit, QPushButton, QFrame
-from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QUrl
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-import json
+from init_data import init_data, get_info_general_routes
 from detail import DetailRoute
 import os
 
@@ -62,13 +61,10 @@ class BusMapApp(QMainWindow):
         scroll_content_layout.addWidget(search_bar)
 
         # Add bus info widgets
-        scroll_content_layout.addWidget(self.create_bus_info('1062', 'Bến Thành - Suối Tiên', '5:30 - 22:30', '20,000 VNĐ'))
-        scroll_content_layout.addWidget(self.create_bus_info('1064', 'Vinhomes Grand Park - Bến xe buýt Sài Gòn', '05:00 - 22:00', '7,000 VNĐ'))
-        scroll_content_layout.addWidget(self.create_bus_info('1065', 'Bến Thành - Bến Xe buýt Chợ Lớn', '05:00 - 20:15', '5,000 VNĐ'))
-        scroll_content_layout.addWidget(self.create_bus_info('03', 'Bến Thành - Thạnh Lộc', '04:00 - 20:45', '6,000 VNĐ'))
-        scroll_content_layout.addWidget(self.create_bus_info('03', 'Bến Thành - Thạnh Lộc', '04:00 - 20:45', '6,000 VNĐ'))
-
-        scroll_content_layout.addWidget(self.create_bus_info('Tuyến số 03', 'Bến Thành - Thạnh Lộc', '04:00 - 20:45', '6,000 VNĐ'))
+        self.all_routes = get_info_general_routes()
+        for route in self.all_routes:
+            scroll_content_layout.addWidget(self.create_bus_info(route[0], route[1], route[2], route[3]))
+        
         scroll_area.setWidget(scroll_content)
         
         # Add scroll area to the scroll frame layout
@@ -114,9 +110,6 @@ class BusMapApp(QMainWindow):
     
     def showRoute(self, html_file):
         url = QUrl.fromLocalFile(os.path.realpath(html_file))
-        # first_addr =  list(self.infoCurRoute.keys())[0]
-        # print(first_addr)
-        # self.update_location(first_addr)
         self.map.setUrl(url)
     
     def update_location(self, newAddr):
@@ -134,8 +127,8 @@ class BusMapApp(QMainWindow):
         route_label.setStyleSheet("font-weight: bold; font-size: 16px; color: green")
 
         desc_label = QLabel(description)
-        time_label = QLabel(f"Thời gian: {time}")
-        price_label = QLabel(f"Giá vé: {price}")
+        time_label = QLabel(f"Время: {time}")
+        price_label = QLabel(f"Стоимость билета: {price}")
 
         buttonLayout.addWidget(route_label)
         buttonLayout.addWidget(desc_label)
@@ -147,10 +140,9 @@ class BusMapApp(QMainWindow):
         return button
 
     def showDetailRoute(self, route):
-        print(route)
         try:
-            with open(f'./data/{route}_stops.json', 'r', encoding='utf-8') as file:
-                self.infoCurRoute = json.load(file)
+            self.cur_data_route = init_data(route, 0)
+            self.infoCurRoute = self.cur_data_route.get_stops_of_route()
         except Exception as e:
             print(e)
         
