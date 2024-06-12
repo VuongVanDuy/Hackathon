@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QSizePolicy, QMainWindow, QWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QScrollArea, QLabel, QLineEdit, QPushButton, QFrame
 from PyQt5.QtCore import QUrl
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from init_data import init_data, get_info_general_routes
+from init_data import init_data_route, get_info_general_routes
 from detail import DetailRoute
 import os
 
@@ -101,7 +101,7 @@ class BusMapApp(QMainWindow):
         view_map_layout = QVBoxLayout(self.frame_view)
         
         self.map = QWebEngineView()
-        html_file = './1062.html'
+        html_file = './map_spb.html'
         url = QUrl.fromLocalFile(os.path.realpath(html_file))
         self.map.load(url)
         
@@ -111,12 +111,6 @@ class BusMapApp(QMainWindow):
     def showRoute(self, html_file):
         url = QUrl.fromLocalFile(os.path.realpath(html_file))
         self.map.setUrl(url)
-    
-    def update_location(self, newAddr):
-        lat = self.infoCurRoute[newAddr][0]
-        lon = self.infoCurRoute[newAddr][1]
-        # Call JavaScript function to update marker location
-        self.map.page().runJavaScript(f"updateMarker({lat}, {lon});")
         
     def create_bus_info(self, route, description, time, price):
         button = QPushButton()
@@ -141,24 +135,39 @@ class BusMapApp(QMainWindow):
 
     def showDetailRoute(self, route):
         try:
-            self.cur_data_route = init_data(route, 0)
-            self.infoCurRoute = self.cur_data_route.get_stops_of_route()
+            self.direction = 0
+            self.cur_data_route = init_data_route(route, self.direction)
+            #self.infoCurRoute = self.cur_data_route.get_stops_of_route()
         except Exception as e:
             print(e)
         
-        stops_route = list(self.infoCurRoute.keys())
+        #stops_route = list(self.infoCurRoute.keys())
         self.frame_tabs.setVisible(False)
-        self.frame_detail = DetailRoute(route, stops_route)
+        self.frame_detail = DetailRoute(self.cur_data_route)
         self.main_layout.insertWidget(0, self.frame_detail)
         self.main_widget.setLayout(self.main_layout)   
-        self.showRoute(f"./{route}" + ".html")   
-        self.frame_detail.back_button.clicked.connect(self.backTabs)
+        self.showRoute(f"./map/direction_{self.direction}/{route}" + ".html")   
+        self.frame_detail.back_button.clicked.connect(self.backMainApp)
         self.hide_button.clicked.disconnect(self.toggle_visibility_tabs)
         self.hide_button.clicked.connect(self.toggle_visibility_details)
-        self.frame_detail.changeAddr.connect(self.update_location)
-        
+        self.frame_detail.changedAddr.connect(self.update_location)
+        self.frame_detail.changedDirection.connect(self.change_direction)
     
-    def backTabs(self):
+    def change_direction(self, direction):
+        self.direction = direction
+        self.cur_data_route = init_data_route(self.cur_data_route.routeId, self.direction)
+        self.showRoute(f"./map/direction_{self.direction}/{self.cur_data_route.routeId}.html")
+        self.frame_detail.update_direction(self.cur_data_route)
+    
+    def update_location(self, newAddr):
+        stops_of_route = self.cur_data_route.get_stops_of_route()
+        lat = stops_of_route[newAddr][0]
+        lon = stops_of_route[newAddr][1]
+        # Call JavaScript function to update marker location
+        self.map.page().runJavaScript(f"updateMarker({lat}, {lon});")
+    
+    def backMainApp(self):
+        self.showRoute('./map_spb.html')
         self.frame_detail.setVisible(False)
         self.frame_tabs.setVisible(True)
         self.hide_button.clicked.disconnect(self.toggle_visibility_details)

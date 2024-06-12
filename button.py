@@ -3,33 +3,31 @@ from PyQt5.QtCore import Qt, QRect, QSize
 from PyQt5.QtGui import QPainter, QPen
 
 class CustomWidget(QWidget):
-    def __init__(self, nameStops):
+    def __init__(self, list_stops):
         super().__init__()
-        self.nameStops = nameStops
+        self.list_stops = list_stops
         self.buttons = []
         self.nameAddr = []
         self.main_layout = QVBoxLayout(self)
-
+        self.create_buttons()
+    
+    def create_buttons(self):
         # Create buttons and add them to the layout
-        for i in range(len(self.nameStops)):
-            widget = QWidget()
-            layout_widget = QHBoxLayout(widget)
+        for i in range(len(self.list_stops)):
+            self.widget = QWidget()
+            layout_widget = QHBoxLayout(self.widget)
             button = QPushButton(self)
             layout_widget.addWidget(button)
-            label = QLabel(self.nameStops[i])
+            label = QLabel(self.list_stops[i])
             label.setStyleSheet("font-size: 14px")
             layout_widget.addWidget(label)
 
-            widget.setLayout(layout_widget)
+            self.widget.setLayout(layout_widget)
             button.setFixedSize(16, 16)  # Set a fixed size for the buttons
             button.setStyleSheet(self.get_button_style(i == 0))  # Style buttons, highlight the middle one
-            self.main_layout.addWidget(widget)
+            self.main_layout.addWidget(self.widget)
             self.buttons.append(button)
             self.nameAddr.append(label)
-        
-        # for button in self.buttons:
-        #     button.clicked.connect(self.on_button_click)
-
         self.main_layout.addStretch()  # Add stretch to center the buttons
 
     def get_button_style(self, highlight=False):

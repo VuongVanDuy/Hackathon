@@ -2,8 +2,10 @@ import json
 import os
 
 # Function to read a JSON file and return its content
-class init_data():
+class init_data_route():
     def __init__(self, routeId, direction):
+        self.routeId = routeId
+        self.direction = direction
         self.file_stops = './data/stops.json'
         self.file_route = f'./data/direction_{direction}/{routeId}.json'
         self.data_route = self.read_data(self.file_route)
@@ -68,13 +70,13 @@ def get_info_general_routes():
     routes = []
     routesId = get_all_routesId()
     for routeId in routesId:
-        routes.append([routeId, data_all_routes[routeId], '6:00 - 24:00', '60 рублей (карта Виза) - 45 рублей (карта Мир)'])
+        routes.append([routeId, data_all_routes[routeId], '6:00 - 24:00', '60 рублей (к. Виза) - 45 рублей (к. Мир)'])
     return routes  
 
 if __name__ == '__main__':
-    data_route = init_data(1062, 0)
+    data_route = init_data_route(1062, 0)
     #print(data_route.get_stops_of_route())
     res = data_route.get_coords_route()
-    print(get_info_general_routes())
+    print(data_route.get_stops_of_route())
 
 

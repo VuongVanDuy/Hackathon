@@ -19,7 +19,7 @@ def getCoords(routeId, direction):
 #     return schedules
 
 
-def draw_route(route_coordinates):
+def draw_route(route_coordinates, route_id, direction):
     global m
 
     m = folium.Map(location=[59.9343, 30.3351], zoom_start=12)
@@ -29,7 +29,7 @@ def draw_route(route_coordinates):
         folium.PolyLine(locations=route_coordinates, color='blue').add_to(m)
         folium.Marker(location=route_coordinates[0], popup="Bus").add_to(m)
         
-        map_file = "route_map.html"
+        map_file = f"./map/direction_{direction}/{route_id}.html"
         m.save(map_file)
 
         #webbrowser.open(map_file)
@@ -47,7 +47,7 @@ def main():
             break
         try:
             route_coordinates = getCoords(route_id, direction)
-            draw_route(route_coordinates)
+            draw_route(route_coordinates, route_id, direction)
         except Exception as e:
             print("Error:", e)
 

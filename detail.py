@@ -1,25 +1,41 @@
 import sys
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore  import pyqtSignal, QObject
+from PyQt5.QtCore  import pyqtSignal
 
 from button import CustomWidget
 
 class DetailRoute(QWidget):
-    changeAddr = pyqtSignal(str)
+    changedAddr = pyqtSignal(str)
+    changedDirection = pyqtSignal(int)
     
-    def __init__(self, route, stops):
+    def __init__(self, info_route):
         super().__init__()
-
+        self.info_route = info_route
+        self.route = self.info_route.routeId
+        self.direction = self.info_route.direction
+        self.stops = list(self.info_route.get_stops_of_route().keys())
+        
         self.setFixedWidth(450)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
-        self.route = route
-        self.stops = stops
         layout = QVBoxLayout(self)
         self.frame_detail = QFrame()
-        layout.addWidget(self.frame_detail)
-        self.setLayout(layout)
         self.create_frame()
+        layout.addWidget(self.frame_detail)
+        self.setLayout(layout)  
 
+    def update_direction(self, route_with_new_direction):
+        self.info_route = route_with_new_direction
+        self.direction = self.info_route.direction
+        self.stops = list(self.info_route.get_stops_of_route().keys())
+        self.scroll_content_layout.removeWidget(self.custom_widget)
+        self.custom_widget = CustomWidget(self.stops)
+        for button in self.custom_widget.buttons:
+            button.clicked.connect(self.on_button_click)
+        self.scroll_content_layout.addWidget(self.custom_widget)
+    
+        self.btn_route_go.setEnabled(self.direction != 0)
+        self.btn_route_return.setEnabled(self.direction != 1)
+        
     def create_frame(self):
         widget = QWidget()
         layout_widget = QHBoxLayout(widget)
@@ -41,10 +57,14 @@ class DetailRoute(QWidget):
 
         # Navigation buttons
         nav_buttons_layout = QHBoxLayout()
-        btn_route_go = QPushButton("Посмотреть маршрут")
-        btn_route_return = QPushButton("Посмотреть обратный маршрут")
-        nav_buttons_layout.addWidget(btn_route_go)
-        nav_buttons_layout.addWidget(btn_route_return)
+        self.btn_route_go = QPushButton("Посмотреть маршрут")
+        self.btn_route_return = QPushButton("Посмотреть обратный маршрут")
+        nav_buttons_layout.addWidget(self.btn_route_go)
+        nav_buttons_layout.addWidget(self.btn_route_return)
+        self.btn_route_go.setEnabled(self.direction != 0)
+        self.btn_route_return.setEnabled(self.direction != 1)
+        self.btn_route_go.clicked.connect(lambda: self.changedDirection.emit(0))
+        self.btn_route_return.clicked.connect(lambda: self.changedDirection.emit(1))
         left_panel_layout.addLayout(nav_buttons_layout)
 
         # Tab with route details
@@ -64,12 +84,12 @@ class DetailRoute(QWidget):
         scroll_area.setWidgetResizable(True)
         
         scroll_content = QWidget()
-        scroll_content_layout = QVBoxLayout(scroll_content)
+        self.scroll_content_layout = QVBoxLayout(scroll_content)
         
         self.custom_widget = CustomWidget(self.stops)
         for button in self.custom_widget.buttons:
             button.clicked.connect(self.on_button_click)
-        scroll_content_layout.addWidget(self.custom_widget)
+        self.scroll_content_layout.addWidget(self.custom_widget)
         #scroll_content_layout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
         scroll_area.setWidget(scroll_content)
         
@@ -110,7 +130,7 @@ class DetailRoute(QWidget):
         for i in range(len(self.custom_widget.buttons)):
             if sender == self.custom_widget.buttons[i]:
                 self.custom_widget.buttons[i].setStyleSheet(self.custom_widget.get_button_style(True))
-                self.changeAddr.emit(self.custom_widget.nameAddr[i].text())
+                self.changedAddr.emit(self.custom_widget.nameAddr[i].text())
             else:
                 self.custom_widget.buttons[i].setStyleSheet(self.custom_widget.get_button_style(False))
 
