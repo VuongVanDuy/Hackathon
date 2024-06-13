@@ -137,11 +137,9 @@ class BusMapApp(QMainWindow):
         try:
             self.direction = 0
             self.cur_data_route = init_data_route(route, self.direction)
-            #self.infoCurRoute = self.cur_data_route.get_stops_of_route()
         except Exception as e:
             print(e)
         
-        #stops_route = list(self.infoCurRoute.keys())
         self.frame_tabs.setVisible(False)
         self.frame_detail = DetailRoute(self.cur_data_route)
         self.main_layout.insertWidget(0, self.frame_detail)

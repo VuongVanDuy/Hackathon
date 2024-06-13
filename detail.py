@@ -1,8 +1,9 @@
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore  import pyqtSignal
-
-from button import CustomWidget
+from PyQt5.QtCore import Qt
+from button_stops import CustomWidget
+from info_route import InfoRoute
 
 class DetailRoute(QWidget):
     changedAddr = pyqtSignal(str)
@@ -11,7 +12,7 @@ class DetailRoute(QWidget):
     def __init__(self, info_route):
         super().__init__()
         self.info_route = info_route
-        self.route = self.info_route.routeId
+        self.routeId = self.info_route.routeId
         self.direction = self.info_route.direction
         self.stops = list(self.info_route.get_stops_of_route().keys())
         
@@ -27,12 +28,26 @@ class DetailRoute(QWidget):
         self.info_route = route_with_new_direction
         self.direction = self.info_route.direction
         self.stops = list(self.info_route.get_stops_of_route().keys())
+        
         self.scroll_content_layout.removeWidget(self.custom_widget)
         self.custom_widget = CustomWidget(self.stops)
         for button in self.custom_widget.buttons:
             button.clicked.connect(self.on_button_click)
         self.scroll_content_layout.addWidget(self.custom_widget)
     
+        self.scroll_content_layout_3.removeWidget(self.info_widget)
+        type_route = "исходящий маршрут" if self.direction == 0 else "обратный маршрут"
+        bus_info = [
+            f"Номер маршрута: {self.routeId}",
+            f"Название маршрута: {self.info_route.name_route}",
+            f"Тип маршрута: {type_route}",
+            f"Стоимость билета: {self.info_route.ticket_price}",
+            f"Время работы: {self.info_route.time}",
+            f"Остановки: {' ➞ '.join(self.stops)}"
+        ]
+        self.info_widget = InfoRoute(bus_info)
+        self.scroll_content_layout_3.addWidget(self.info_widget)
+        
         self.btn_route_go.setEnabled(self.direction != 0)
         self.btn_route_return.setEnabled(self.direction != 1)
         
@@ -49,7 +64,7 @@ class DetailRoute(QWidget):
         header_layout = QHBoxLayout()
         self.back_button = QPushButton("←")
         self.back_button.setFixedSize(30, 30)
-        route_title = QLabel(f"Маршрут № {self.route}")
+        route_title = QLabel(f"Маршрут № {self.routeId}")
         route_title.setStyleSheet("font-size: 18px; font-weight: bold;")
         header_layout.addWidget(self.back_button)
         header_layout.addWidget(route_title)
@@ -68,16 +83,32 @@ class DetailRoute(QWidget):
         left_panel_layout.addLayout(nav_buttons_layout)
 
         # Tab with route details
-        tab_route = QTabWidget()
+        self.tab_widget = QTabWidget()
+        self.create_tab1()
+        self.create_tab2()
+        self.create_tab3()
+        self.create_tab4()
+        self.tab_widget.setCurrentIndex(1)
         
+        left_panel_layout.addWidget(self.tab_widget)
+        layout_widget.addWidget(left_panel)
+       # layout_widget.addWidget(tab_widget)
+        
+        main_layout = QVBoxLayout(self.frame_detail)
+        main_layout.addWidget(widget)
+        self.frame_detail.setLayout(main_layout)
+        
+    
+    def create_tab1(self):
         # Tab 1
-        tab1 = QWidget()
-        tab_route.addTab(tab1, "График")
+        self.tab1 = QWidget()
+        self.tab_widget.addTab(self.tab1, "График")
         
-        tab2 = QWidget()
-        layout_tab2 = QVBoxLayout(tab2)
-        self.scroll_frame = QFrame()
-        self.scroll_layout = QVBoxLayout(self.scroll_frame)
+    def create_tab2(self):
+        self.tab2 = QWidget()
+        layout_tab2 = QVBoxLayout(self.tab2)
+        scroll_frame = QFrame()
+        scroll_layout = QVBoxLayout(scroll_frame)
         
         # Create scroll area
         scroll_area = QScrollArea()
@@ -94,28 +125,47 @@ class DetailRoute(QWidget):
         scroll_area.setWidget(scroll_content)
         
         # Add scroll area to the scroll frame layout
-        self.scroll_layout.addWidget(scroll_area)
+        scroll_layout.addWidget(scroll_area)
 
         # Add scroll frame to tab layout
-        layout_tab2.addWidget(self.scroll_frame)
+        layout_tab2.addWidget(scroll_frame)
         
-        tab2.setLayout(layout_tab2)
-        tab_route.addTab(tab2, "Остановка")
-        # Adding left panel to the main layout
+        self.tab2.setLayout(layout_tab2)
+        self.tab_widget.addTab(self.tab2, "Остановка")
+    
+    def create_tab3(self):
+        self.tab3 = QWidget()
+        layout_tab3 = QVBoxLayout(self.tab3)
+        scroll_frame = QFrame()
+        scroll_layout = QVBoxLayout(scroll_frame)
         
-        tab3 = QWidget()
-        tab_route.addTab(tab3, "Информация")
+        # Create scroll area
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
         
-        tab4 = QWidget()
-        tab_route.addTab(tab4, "Оценка")
+        scroll_content = QWidget()
+        self.scroll_content_layout_3 = QVBoxLayout(scroll_content)
         
-        left_panel_layout.addWidget(tab_route)
-        layout_widget.addWidget(left_panel)
-       # layout_widget.addWidget(tab_route)
-        
-        main_layout = QVBoxLayout(self.frame_detail)
-        main_layout.addWidget(widget)
-        self.frame_detail.setLayout(main_layout)
+        type_route = "исходящий маршрут" if self.direction == 0 else "обратный маршрут"
+        bus_info = [
+            f"Номер маршрута: {self.routeId}",
+            f"Название маршрута: {self.info_route.name_route}",
+            f"Тип маршрута: {type_route}",
+            f"Стоимость билета: {self.info_route.ticket_price}",
+            f"Время работы: {self.info_route.time}",
+            f"Остановки: {' ➞ '.join(self.stops)}"
+        ]
+        self.info_widget = InfoRoute(bus_info)
+        self.scroll_content_layout_3.addWidget(self.info_widget)
+        scroll_area.setWidget(scroll_content)
+        scroll_layout.addWidget(scroll_area)
+        layout_tab3.addWidget(scroll_frame)
+        self.tab3.setLayout(layout_tab3)
+        self.tab_widget.addTab(self.tab3, "Информация")
+    
+    def create_tab4(self):
+        self.tab4 = QWidget()
+        self.tab_widget.addTab(self.tab4, "Оценка")
 
     def toggle_visibility(self):
         if self.scroll_frame.isVisible():

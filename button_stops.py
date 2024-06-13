@@ -23,7 +23,7 @@ class CustomWidget(QWidget):
             layout_widget.addWidget(label)
 
             self.widget.setLayout(layout_widget)
-            button.setFixedSize(16, 16)  # Set a fixed size for the buttons
+            button.setFixedSize(14, 14)  # Set a fixed size for the buttons
             button.setStyleSheet(self.get_button_style(i == 0))  # Style buttons, highlight the middle one
             self.main_layout.addWidget(self.widget)
             self.buttons.append(button)
@@ -35,7 +35,7 @@ class CustomWidget(QWidget):
             QPushButton {
                 background-color: #cccccc;
                 border: 2px solid #666666;
-                border-radius: 8px;
+                border-radius: 7px;
             }
             QPushButton:pressed {
                 background-color: #aaaaaa;
@@ -45,7 +45,7 @@ class CustomWidget(QWidget):
             QPushButton {
                 background-color: #009688;
                 border: 2px solid #666666;
-                border-radius: 8px;
+                border-radius: 7px;
             }
             QPushButton:pressed {
                 background-color: #00796b;
@@ -79,6 +79,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication([])
-    window = MainWindow()
+    #window = MainWindow()
+    window = CustomWidget(['A', 'B', 'C', 'D', 'E'])
     window.show()
     app.exec_()

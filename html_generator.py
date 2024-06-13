@@ -1,14 +1,13 @@
-import requests
 import folium
 import webbrowser
-import keyboard
-from init_data import init_data
+import os
+from init_data import init_data_route
 
 m = folium.Map(location=[59.9343, 30.3351], zoom_start=12)
 
 
 def getCoords(routeId, direction):
-    data_route = init_data(routeId, direction)
+    data_route = init_data_route(routeId, direction)
     return data_route.get_coords_route()
 
 
@@ -30,6 +29,12 @@ def draw_route(route_coordinates, route_id, direction):
         folium.Marker(location=route_coordinates[0], popup="Bus").add_to(m)
         
         map_file = f"./map/direction_{direction}/{route_id}.html"
+        # if os.path.exists(map_file):
+        #     print(f"{map_file} already exists. Exiting.")
+        #     return
+        # else:
+        #     m.save(map_file)
+        
         m.save(map_file)
 
         #webbrowser.open(map_file)
